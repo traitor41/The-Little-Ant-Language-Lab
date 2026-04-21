@@ -63,11 +63,16 @@
             
             <!-- Logo 与 品牌名 -->
             <div class="flex items-center gap-3">
-                <a href="https://ibb.co/nqSM17qy" target="_blank" class="bg-black p-1 rounded-2xl shadow-md hover:scale-105 transition-transform border-2 border-antPink">
-                    <!-- 使用备用链接策略确保显示 -->
-                    <img src="https://i.ibb.co/cKdh86K9/image-916b42.png" 
-                         onerror="this.onerror=null; this.src='https://i.ibb.co.com/cKdh86K9/image-916b42-png.png';" 
-                         alt="Little Ant Logo" class="h-12 w-12 object-cover rounded-xl">
+                <a href="#" class="hover:scale-105 transition-transform">
+                    <!-- 终极解决方案：使用本地相对路径读取 GitHub 里的图片 -->
+                    <img src="./logo.png" 
+                         alt="Little Ant Logo" 
+                         onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';"
+                         class="h-12 w-12 object-contain rounded-xl bg-black border-2 border-antPink shadow-md p-0.5">
+                    <!-- 在你传好 GitHub 之前，暂时显示这个小蚂蚁 -->
+                    <div id="fallback-logo" style="display: none;" class="h-12 w-12 bg-black rounded-xl items-center justify-center text-antPink text-2xl font-black border-2 border-antPink shadow-md">
+                        🐜
+                    </div>
                 </a>
                 <div class="font-black text-2xl tracking-wide hidden sm:block">
                     <span class="text-antPink" data-i18n="brand_part1">小蚂蚁</span>
