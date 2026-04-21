@@ -116,59 +116,39 @@
         </div>
     </section>
 
-    <!-- 互动字卡区域 -->
-    <section id="flashcards" class="py-20 bg-white border-y-8 border-dashed border-antBlue/20">
-        <div class="max-w-4xl mx-auto px-4">
+    <!-- 🌟 新增：魔法游戏乐园区域 -->
+    <section id="games" class="py-20 bg-green-50 border-t-8 border-dashed border-green-200">
+        <div class="max-w-5xl mx-auto px-4">
             <div class="text-center mb-10">
-                <h2 data-i18n="card_title" class="text-4xl font-black text-antBlue mb-4">✨ 魔法发音字卡 ✨</h2>
-                <p data-i18n="card_desc" class="text-lg text-gray-500 font-bold bg-blue-50 inline-block px-6 py-2 rounded-full">
-                    点一点卡片会翻转，按喇叭会说话哦！
+                <h2 data-i18n="game_title" class="text-4xl font-black text-green-600 mb-4">🎮 魔法游戏乐园 🎮</h2>
+                <p data-i18n="game_desc" class="text-lg text-gray-500 font-bold bg-green-100 inline-block px-6 py-2 rounded-full">
+                    边玩边学，看看你能得多少分！
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-10 items-center">
-                <!-- 左侧字卡 -->
-                <div class="flip-card w-full h-80 cursor-pointer" onclick="this.classList.toggle('flipped')">
-                    <div class="flip-card-inner w-full h-full relative rounded-[2rem] shadow-2xl">
-                        <!-- 正面（中文） -->
-                        <div class="flip-card-front bg-gray-900 flex flex-col items-center justify-center text-white border-8 border-antPink">
-                            <span class="text-7xl mb-4 drop-shadow-md">👂</span>
-                            <span class="text-2xl text-pink-300 font-black tracking-widest bg-black/30 px-4 py-1 rounded-full mb-2">tīng</span>
-                            <h3 class="text-6xl font-black mb-4" id="cn-text">听</h3>
-                            <p class="text-sm text-pink-200 font-bold animate-bounce mt-2">👇 点击翻转</p>
-                        </div>
-                        <!-- 反面（英文+印尼语） -->
-                        <div class="flip-card-back bg-[#fffaf0] flex flex-col items-center justify-center border-8 border-antBlue p-6">
-                            <div class="w-full mb-6 text-center bg-blue-100 p-4 rounded-3xl border-4 border-blue-200">
-                                <span class="text-sm text-antBlue font-black uppercase">English</span>
-                                <p class="text-4xl font-black text-gray-800 mt-1" id="en-text">Listen</p>
-                            </div>
-                            <div class="w-full text-center bg-orange-100 p-4 rounded-3xl border-4 border-orange-200">
-                                <span class="text-sm text-antOrange font-black uppercase">Bahasa Indonesia</span>
-                                <p class="text-4xl font-black text-gray-800 mt-1" id="id-text">Mendengar</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 右侧控制区 -->
-                <div class="bg-white border-4 border-gray-100 p-8 rounded-[2rem] shadow-xl relative">
-                    <div class="absolute -top-6 -right-6 text-6xl rotate-12">🐜</div>
-                    <h3 data-i18n="panel_title" class="font-black text-2xl mb-6 text-gray-800">发音小助手 🎙️</h3>
-                    <div class="space-y-4">
-                        <button onclick="speakText('cn')" class="btn-bouncy w-full flex items-center justify-center gap-3 bg-red-100 text-red-600 py-4 rounded-2xl font-black text-lg border-2 border-red-200">
-                            <i class="fas fa-volume-up text-xl"></i> <span data-i18n="btn_zh">听中文 (Mandarin)</span>
-                        </button>
-                        <button onclick="speakText('en')" class="btn-bouncy w-full flex items-center justify-center gap-3 bg-blue-100 text-blue-600 py-4 rounded-2xl font-black text-lg border-2 border-blue-200">
-                            <i class="fas fa-volume-up text-xl"></i> <span data-i18n="btn_en">听英文 (English)</span>
-                        </button>
-                        <button onclick="speakText('id')" class="btn-bouncy w-full flex items-center justify-center gap-3 bg-emerald-100 text-emerald-600 py-4 rounded-2xl font-black text-lg border-2 border-emerald-200">
-                            <i class="fas fa-volume-up text-xl"></i> <span data-i18n="btn_id">听印尼语 (Bahasa)</span>
-                        </button>
-                    </div>
-                    <button onclick="changeWord()" class="btn-bouncy mt-8 w-full bg-antOrange text-white font-black py-4 rounded-2xl text-lg border-4 border-orange-600 hover:bg-orange-400">
-                        <span data-i18n="btn_next">换一个词 Next</span> 🎲
+            <!-- 游戏嵌入容器 -->
+            <div class="bg-white p-4 md:p-6 rounded-[2rem] shadow-xl border-4 border-green-400">
+                <div class="flex justify-between items-center mb-4 px-2">
+                    <h3 data-i18n="game_1_name" class="font-black text-2xl text-gray-800">游戏 1：小蚂蚁找汉字</h3>
+                    <button class="bg-green-500 text-white font-bold px-4 py-2 rounded-xl hover:bg-green-400 transition btn-bouncy" onclick="document.getElementById('game-iframe').requestFullscreen()">
+                        🔲 全屏玩 (Full Screen)
                     </button>
+                </div>
+                
+                <!-- 这是嵌入游戏的关键：iframe -->
+                <div class="w-full aspect-video bg-gray-900 rounded-2xl overflow-hidden relative border-4 border-gray-800 shadow-inner">
+                    <!-- 
+                        src="./game1.html" 是你游戏文件的路径。
+                        当你在本地测试时，确保 game1.html 和 index.html 在同一个文件夹里。
+                    -->
+                    <iframe id="game-iframe" src="./game1.html" class="w-full h-full border-none" title="Little Ant Game" allowfullscreen></iframe>
+                    
+                    <!-- 提示层：如果游戏没加载出来，会显示这个 -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 -z-10 bg-gray-100">
+                        <span class="text-6xl mb-4">🕹️</span>
+                        <p class="font-bold">游戏加载中...</p>
+                        <p class="text-sm mt-2">（请确保你已上传了 game1.html）</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -242,6 +222,9 @@
                 course_2_desc: "结合趣味话题，轻松提高听说读写能力。",
                 course_2_f1: "🗣️ 互动情景对话练习",
                 course_2_f2: "🏆 游戏化通关水平测试",
+                game_title: "🎮 魔法游戏乐园 🎮",
+                game_desc: "边玩边学，看看你能得多少分！",
+                game_1_name: "游戏 1：小蚂蚁找汉字",
                 footer: "&copy; 2024 The Little Ant Language Lab. 保留所有权利。"
             },
             en: {
@@ -269,6 +252,9 @@
                 course_2_desc: "Improve speaking and writing with fun topics.",
                 course_2_f1: "🗣️ Interactive role-play",
                 course_2_f2: "🏆 Gamified challenges",
+                game_title: "🎮 Magic Game Park 🎮",
+                game_desc: "Play and learn, see your high score!",
+                game_1_name: "Game 1: Ant's Word Hunt",
                 footer: "&copy; 2024 The Little Ant Language Lab. All rights reserved."
             },
             id: {
@@ -296,6 +282,9 @@
                 course_2_desc: "Tingkatkan kemampuan bahasa dengan topik yang seru.",
                 course_2_f1: "🗣️ Percakapan interaktif",
                 course_2_f2: "🏆 Tantangan bermain game",
+                game_title: "🎮 Taman Bermain Ajaib 🎮",
+                game_desc: "Bermain sambil belajar, lihat skormu!",
+                game_1_name: "Game 1: Semut Mencari Kata",
                 footer: "&copy; 2024 The Little Ant Language Lab. Semua hak dilindungi."
             }
         };
