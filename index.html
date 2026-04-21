@@ -5,28 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Little Ant Language Lab</title>
     <!-- 引入儿童风格的圆润字体 -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script>
-        // 配置 Tailwind 颜色以匹配你的 Logo
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Nunito', 'sans-serif'] },
+                    fontFamily: { 
+                        sans: ['Nunito', 'sans-serif'],
+                        cartoon: ['"ZCOOL KuaiLe"', 'cursive']
+                    },
                     colors: {
-                        antPink: '#ec4899', // 接近小蚂蚁的粉色
-                        antBlue: '#0ea5e9', // 接近 LITTLE ANT 的蓝色
-                        antOrange: '#f97316', // 接近中文"小蚂蚁"的橙色
+                        antPink: '#ec4899', 
+                        antBlue: '#0ea5e9', 
+                        antOrange: '#f97316',
+                        portalSky: '#a0d8ef',
+                        portalGrass: '#a8e6cf'
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Nunito', sans-serif; background-color: #fffaf0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Nunito', sans-serif; background-color: #fffaf0; overflow-x: hidden; }
         
-        /* 像儿童玩具一样的立体按钮阴影 */
         .btn-bouncy {
             box-shadow: 0 6px 0 0 rgba(0,0,0,0.15);
             transition: all 0.1s;
@@ -36,335 +40,475 @@
             box-shadow: 0 2px 0 0 rgba(0,0,0,0.15);
         }
 
-        /* 翻转卡片特效 */
-        .flip-card { perspective: 1000px; }
-        .flip-card-inner {
-            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-            transform-style: preserve-3d;
-        }
-        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-        .flip-card-front, .flip-card-back {
-            backface-visibility: hidden;
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 2rem;
-        }
-        .flip-card-back { transform: rotateY(180deg); }
+        .bg-cartoon-sky { background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 100%); }
+        .bg-cartoon-grass { background: linear-gradient(to bottom, #90EE90 0%, #3CB371 100%); }
+        .bg-room { background: linear-gradient(to bottom, #fffaf0 0%, #ffe4e1 100%); }
+        .bg-carpet { background: #ffb6c1; border-top: 10px solid #ff69b4; border-radius: 50% 50% 0 0 / 20px 20px 0 0; }
         
-        /* 隐藏元素的类 */
-        .hidden-lang { display: none; }
+        .resource-btn {
+            background: linear-gradient(to bottom, #ffffff, #f3f4f6);
+            border: 4px solid white;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+        .resource-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 25px rgba(0,0,0,0.15); }
+        
+        .game-menu-btn {
+            background: linear-gradient(to bottom, #FFEFD5, #FFDAB9);
+            border: 3px solid #FFF8DC;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: #D2691E;
+        }
+        .game-menu-btn:hover { background: linear-gradient(to bottom, #FFF8DC, #FFE4B5); color: #FF4500; transform: scale(1.05); }
+
+        .floating { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-15px); } 100% { transform: translateY(0px); } }
+        
+        .hidden-view { display: none !important; }
     </style>
 </head>
-<body class="text-gray-800">
+<body class="text-gray-800 pt-24"> 
 
-    <!-- 导航栏 -->
-    <nav class="bg-white border-b-4 border-antPink/20 fixed w-full z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+    <!-- ==================== 全局固定导航栏 ==================== -->
+    <nav class="bg-white border-b-8 border-antPink fixed top-0 w-full z-[200] shadow-xl">
+        <div class="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
             
             <!-- Logo 与 品牌名 -->
-            <div class="flex items-center gap-3">
-                <a href="#" class="hover:scale-105 transition-transform flex items-center">
-                    <!-- 去掉了所有黑底和边框，放大了尺寸 (h-20) -->
-                    <img src="./logo.png" 
-                         alt="Little Ant Logo" 
-                         onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';"
-                         class="h-20 w-auto object-contain">
-                    <!-- 备用图标也去掉了边框并放大 -->
-                    <div id="fallback-logo" style="display: none;" class="h-20 w-20 items-center justify-center text-antPink text-5xl font-black">
-                        🐜
-                    </div>
-                </a>
-                <div class="font-black text-2xl md:text-3xl tracking-wide hidden sm:block ml-2">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="switchView('view-landing')">
+                <img src="./logo.png" alt="Little Ant Logo" onerror="this.style.display='none'; document.getElementById('fallback-logo').style.display='flex';" class="h-16 w-auto object-contain drop-shadow-md group-hover:rotate-12 group-hover:scale-110 transition-transform duration-300">
+                <div id="fallback-logo" style="display: none;" class="h-16 w-16 items-center justify-center text-antPink text-4xl font-black bg-black rounded-xl">🐜</div>
+                
+                <div class="font-black text-2xl tracking-wide hidden sm:block ml-2 drop-shadow-sm">
                     <span class="text-antPink" data-i18n="brand_part1">小蚂蚁</span>
                     <span class="text-antBlue" data-i18n="brand_part2">语言实验室</span>
                 </div>
             </div>
 
-            <!-- 语言切换器 -->
-            <div class="flex gap-2">
-                <button onclick="setLang('zh')" id="btn-lang-zh" class="lang-btn w-10 h-10 rounded-full font-bold text-sm bg-gray-100 hover:bg-antPink hover:text-white transition ring-4 ring-antPink text-antPink">中</button>
-                <button onclick="setLang('en')" id="btn-lang-en" class="lang-btn w-10 h-10 rounded-full font-bold text-sm bg-gray-100 hover:bg-antBlue hover:text-white transition text-gray-500">EN</button>
-                <button onclick="setLang('id')" id="btn-lang-id" class="lang-btn w-10 h-10 rounded-full font-bold text-sm bg-gray-100 hover:bg-antOrange hover:text-white transition text-gray-500">ID</button>
+            <div class="flex gap-4 items-center">
+                <!-- 快捷导航 (仅在主页显示时有用) -->
+                <div class="hidden md:flex gap-6 font-bold text-gray-500 mr-4">
+                    <a href="#about-us" class="hover:text-antPink transition" data-i18n="nav_about">关于我们</a>
+                    <a href="#courses" class="hover:text-antBlue transition" data-i18n="nav_courses">课程体系</a>
+                </div>
+
+                <!-- 语言切换器 -->
+                <div class="flex gap-2">
+                    <button onclick="setLang('zh')" id="btn-lang-zh" class="w-10 h-10 rounded-full font-black text-sm bg-antPink text-white ring-4 ring-pink-200 btn-bouncy">中</button>
+                    <button onclick="setLang('en')" id="btn-lang-en" class="w-10 h-10 rounded-full font-black text-sm bg-gray-100 text-gray-500 hover:bg-antBlue hover:text-white transition btn-bouncy">EN</button>
+                    <button onclick="setLang('id')" id="btn-lang-id" class="w-10 h-10 rounded-full font-black text-sm bg-gray-100 text-gray-500 hover:bg-antOrange hover:text-white transition btn-bouncy">ID</button>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- 首屏区域 -->
-    <section id="home" class="pt-36 pb-20 px-4 text-center max-w-4xl mx-auto relative">
-        <!-- 装饰背景球 -->
-        <div class="absolute top-20 left-10 w-20 h-20 bg-antBlue/20 rounded-full blur-xl -z-10"></div>
-        <div class="absolute bottom-10 right-10 w-32 h-32 bg-antOrange/20 rounded-full blur-xl -z-10"></div>
+    <!-- ==================== 1. 补习班官网主页 (宣传页) ==================== -->
+    <div id="view-landing" class="block">
+        
+        <!-- 第一屏：头图 -->
+        <section id="home" class="pt-10 pb-20 px-4 text-center max-w-5xl mx-auto relative">
+            <div class="absolute top-10 left-10 w-20 h-20 bg-antBlue/20 rounded-full blur-xl -z-10"></div>
+            <div class="absolute bottom-10 right-10 w-32 h-32 bg-antOrange/20 rounded-full blur-xl -z-10"></div>
 
-        <span data-i18n="hero_badge" class="bg-yellow-200 text-yellow-800 px-5 py-2 rounded-full text-sm font-black mb-6 inline-block border-2 border-yellow-300 shadow-sm">
-            ✨ 雅加达最欢乐的儿童课堂 ✨
-        </span>
-        <h1 class="text-5xl md:text-6xl font-black text-gray-800 mb-6 leading-tight">
-            <span data-i18n="hero_title_1">在</span> 
-            <span class="text-antPink">Little Ant</span><br>
-            <span data-i18n="hero_title_2">开心学中文与英文！</span>
-        </h1>
-        <p data-i18n="hero_desc" class="text-xl text-gray-600 mb-10 font-bold max-w-2xl mx-auto">
-            专为小朋友打造的魔法课堂！告别无聊，在游戏中掌握三种语言。
-        </p>
-        <div class="flex justify-center gap-4 flex-wrap">
-            <a href="#courses" data-i18n="btn_courses" class="btn-bouncy bg-antPink text-white px-8 py-4 rounded-full font-black text-lg border-4 border-pink-600 hover:bg-pink-400 transition">
-                🎈 看看课程
-            </a>
-            <a href="#flashcards" data-i18n="btn_cards" class="btn-bouncy bg-white text-antBlue px-8 py-4 rounded-full font-black text-lg border-4 border-antBlue hover:bg-blue-50 transition">
-                🎮 玩转魔法字卡
-            </a>
-        </div>
-    </section>
-
-    <!-- 🌟 新增：魔法游戏乐园区域 -->
-    <section id="games" class="py-20 bg-green-50 border-t-8 border-dashed border-green-200">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="text-center mb-10">
-                <h2 data-i18n="game_title" class="text-4xl font-black text-green-600 mb-4">🎮 魔法游戏乐园 🎮</h2>
-                <p data-i18n="game_desc" class="text-lg text-gray-500 font-bold bg-green-100 inline-block px-6 py-2 rounded-full">
-                    边玩边学，看看你能得多少分！
-                </p>
+            <span class="bg-yellow-200 text-yellow-800 px-6 py-2 rounded-full text-sm font-black mb-6 inline-block border-2 border-yellow-300 shadow-sm" data-i18n="hero_badge">✨ 雅加达最欢乐的儿童课堂 ✨</span>
+            
+            <h1 class="text-5xl md:text-7xl font-black text-gray-800 mb-6 leading-tight mt-4">
+                <span data-i18n="hero_title_1">在</span> 
+                <span class="text-antPink drop-shadow-sm">Little Ant</span><br>
+                <span data-i18n="hero_title_2">开心学中文与英文！</span>
+            </h1>
+            <p data-i18n="hero_desc" class="text-xl text-gray-600 mb-10 font-bold max-w-2xl mx-auto bg-orange-50 p-4 rounded-3xl border-4 border-dashed border-orange-200">
+                专为小朋友打造的魔法课堂！告别无聊，在游戏中掌握三种语言。
+            </p>
+            <div class="flex justify-center gap-6 flex-wrap">
+                <a href="#courses" class="btn-bouncy bg-antPink text-white px-8 py-4 rounded-[2rem] font-black text-xl border-b-8 border-pink-700 hover:bg-pink-400 transition flex items-center gap-2">
+                    🎈 <span data-i18n="btn_courses">了解课程</span>
+                </a>
+                <!-- 核心入口：进入游戏世界 -->
+                <button onclick="switchView('view-portal-map')" class="btn-bouncy bg-antBlue text-white px-8 py-4 rounded-[2rem] font-black text-xl border-b-8 border-blue-700 hover:bg-blue-400 transition flex items-center gap-2">
+                    🎮 <span data-i18n="btn_enter_game">进入数字游戏世界</span>
+                </button>
             </div>
+        </section>
 
-            <!-- 游戏嵌入容器 -->
-            <div class="bg-white p-4 md:p-6 rounded-[2rem] shadow-xl border-4 border-green-400">
-                <div class="flex justify-between items-center mb-4 px-2">
-                    <h3 data-i18n="game_1_name" class="font-black text-2xl text-gray-800">游戏 1：小蚂蚁找汉字</h3>
-                    <button class="bg-green-500 text-white font-bold px-4 py-2 rounded-xl hover:bg-green-400 transition btn-bouncy" onclick="document.getElementById('game-iframe').requestFullscreen()">
-                        🔲 全屏玩 (Full Screen)
-                    </button>
+        <!-- 第二屏：关于我们 (补习班特色) -->
+        <section id="about-us" class="py-20 bg-white border-t-8 border-dashed border-antPink/20">
+            <div class="max-w-6xl mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-black text-antPink mb-4" data-i18n="about_title">为什么选择小蚂蚁？</h2>
+                    <p class="text-xl text-gray-500 font-bold" data-i18n="about_subtitle">用最有趣的方式，培养最扎实的语言基础</p>
                 </div>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-pink-50 p-8 rounded-3xl border-4 border-pink-100 hover:-translate-y-2 transition duration-300">
+                        <div class="text-6xl mb-6">🌍</div>
+                        <h3 class="text-2xl font-black text-gray-800 mb-4" data-i18n="feat_1_title">纯正三语环境</h3>
+                        <p class="text-gray-600 font-bold" data-i18n="feat_1_desc">中文、英文、印尼语无缝切换，从小培养跨文化交流能力。</p>
+                    </div>
+                    <div class="bg-blue-50 p-8 rounded-3xl border-4 border-blue-100 hover:-translate-y-2 transition duration-300">
+                        <div class="text-6xl mb-6">🎮</div>
+                        <h3 class="text-2xl font-black text-gray-800 mb-4" data-i18n="feat_2_title">互动游戏教学</h3>
+                        <p class="text-gray-600 font-bold" data-i18n="feat_2_desc">独创“数字游戏世界”，让孩子在玩耍中不知不觉记住生字和单词。</p>
+                    </div>
+                    <div class="bg-orange-50 p-8 rounded-3xl border-4 border-orange-100 hover:-translate-y-2 transition duration-300">
+                        <div class="text-6xl mb-6">👩‍🏫</div>
+                        <h3 class="text-2xl font-black text-gray-800 mb-4" data-i18n="feat_3_title">专业教师团队</h3>
+                        <p class="text-gray-600 font-bold" data-i18n="feat_3_desc">拥有多年少儿语言教学经验，懂教育更懂孩子。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 第三屏：课程体系 -->
+        <section id="courses" class="py-20 bg-amber-50 border-t-8 border-antBlue/20">
+            <div class="max-w-6xl mx-auto px-4">
+                <h2 class="text-4xl font-black text-center mb-12 text-antOrange" data-i18n="course_title">🎈 我们的快乐课堂 🎈</h2>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="bg-white p-10 rounded-[2rem] shadow-xl border-4 border-antPink relative hover:-translate-y-2 transition duration-300">
+                        <div class="w-20 h-20 bg-pink-100 text-antPink rounded-full flex items-center justify-center text-4xl mb-6 border-4 border-pink-200">👶</div>
+                        <h3 class="text-3xl font-black mb-4 text-gray-800" data-i18n="course_1_title">少儿启蒙班 (5-10岁)</h3>
+                        <p class="text-gray-600 font-bold mb-6 text-lg" data-i18n="course_1_desc">在故事和儿歌中认识世界，开心开口说话！</p>
+                        <ul class="text-gray-600 font-bold space-y-4 bg-pink-50 p-6 rounded-3xl text-lg">
+                            <li data-i18n="course_1_f1">🎨 趣味绘本与互动涂鸦</li>
+                            <li data-i18n="course_1_f2">🎵 拼音与自然拼读儿歌</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-10 rounded-[2rem] shadow-xl border-4 border-antBlue relative hover:-translate-y-2 transition duration-300">
+                        <div class="absolute -top-6 -right-6 bg-yellow-400 text-yellow-900 font-black px-6 py-2 rounded-full border-4 border-yellow-500 shadow-md rotate-12 text-lg">HOT! 🔥</div>
+                        <div class="w-20 h-20 bg-blue-100 text-antBlue rounded-full flex items-center justify-center text-4xl mb-6 border-4 border-blue-200">👦</div>
+                        <h3 class="text-3xl font-black mb-4 text-gray-800" data-i18n="course_2_title">少儿进阶班 (11-15岁)</h3>
+                        <p class="text-gray-600 font-bold mb-6 text-lg" data-i18n="course_2_desc">结合趣味话题，轻松提高听说读写能力。</p>
+                        <ul class="text-gray-600 font-bold space-y-4 bg-blue-50 p-6 rounded-3xl text-lg">
+                            <li data-i18n="course_2_f1">🗣️ 互动情景对话练习</li>
+                            <li data-i18n="course_2_f2">🏆 游戏世界通关测试</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-gray-900 text-gray-400 py-10 text-center font-bold">
+            <div class="flex justify-center items-center gap-2 mb-4 opacity-50">
+                <span class="text-antPink">Little</span> <span class="text-antBlue">Ant</span> <span class="text-antOrange">Edu</span>
+            </div>
+            <p data-i18n="footer">&copy; 2024 The Little Ant Language Lab. All rights reserved.</p>
+        </footer>
+    </div>
+
+
+    <!-- ==================== 2. 数字游戏世界 (Hub / Map) ==================== -->
+    <div id="view-portal-map" class="hidden-view fixed inset-0 z-[100] bg-cartoon-sky flex flex-col overflow-hidden pt-28 pb-6">
+        <!-- 顶部返回栏 -->
+        <div class="p-4 flex justify-between items-center relative z-10 shrink-0">
+            <button onclick="switchView('view-landing')" class="btn-bouncy bg-white text-antPink font-black px-6 py-3 rounded-2xl border-4 border-antPink shadow-md hover:bg-pink-50 flex items-center gap-2">
+                🏠 <span data-i18n="btn_back_home">返回官网主页</span>
+            </button>
+            <div class="bg-white/90 px-8 py-3 rounded-full border-4 border-antOrange shadow-lg font-cartoon text-3xl text-antOrange font-black tracking-widest hidden md:block">
+                🌟 数字游乐园大厅 🌟
+            </div>
+            <div class="w-24"></div> 
+        </div>
+
+        <!-- 资源分类大厅 -->
+        <div class="flex-1 relative flex items-center justify-center p-4 md:p-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl w-full">
                 
-                <!-- 这是嵌入游戏的关键：iframe -->
-                <div class="w-full aspect-video bg-gray-900 rounded-2xl overflow-hidden relative border-4 border-gray-800 shadow-inner">
-                    <!-- 
-                        src="./game1.html" 是你游戏文件的路径。
-                        当你在本地测试时，确保 game1.html 和 index.html 在同一个文件夹里。
-                    -->
-                    <iframe id="game-iframe" src="./game1.html" class="w-full h-full border-none" title="Little Ant Game" allowfullscreen></iframe>
+                <!-- 类别 1：游戏大厅 -->
+                <button onclick="openResourceRoom('games')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
+                    <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">🎮</div>
+                    <div class="text-center">
+                        <div class="font-cartoon text-3xl text-antBlue drop-shadow-sm mb-2">互动游戏区</div>
+                        <div class="text-sm font-bold text-gray-500">生字魔法屋、找找看...</div>
+                    </div>
+                </button>
+
+                <!-- 类别 2：电子书 -->
+                <button onclick="openResourceRoom('ebooks')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
+                    <div class="w-24 h-24 bg-pink-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">📚</div>
+                    <div class="text-center">
+                        <div class="font-cartoon text-3xl text-antPink drop-shadow-sm mb-2">电子绘本馆</div>
+                        <div class="text-sm font-bold text-gray-500">有声故事、趣味阅读...</div>
+                    </div>
+                </button>
+
+                <!-- 类别 3：魔法字卡 -->
+                <button onclick="openResourceRoom('flashcards')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
+                    <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">✨</div>
+                    <div class="text-center">
+                        <div class="font-cartoon text-3xl text-yellow-600 drop-shadow-sm mb-2">魔法字卡</div>
+                        <div class="text-sm font-bold text-gray-500">点读发音、图文并茂...</div>
+                    </div>
+                </button>
+
+                <!-- 类别 4：练习卷 -->
+                <button onclick="openResourceRoom('worksheets')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
+                    <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">🖨️</div>
+                    <div class="text-center">
+                        <div class="font-cartoon text-3xl text-green-600 drop-shadow-sm mb-2">练习下载区</div>
+                        <div class="text-sm font-bold text-gray-500">趣味涂色、写字练习...</div>
+                    </div>
+                </button>
+
+            </div>
+        </div>
+
+        <div class="h-32 bg-cartoon-grass relative border-t-8 border-green-500 shrink-0">
+            <div class="text-6xl absolute bottom-8 left-10 animate-bounce">🌻</div>
+            <div class="text-8xl absolute bottom-6 right-20 floating">🐜</div>
+        </div>
+    </div>
+
+
+    <!-- ==================== 3. 具体资源房间 (动态菜单) ==================== -->
+    <div id="view-portal-room" class="hidden-view fixed inset-0 z-[110] bg-room flex flex-col overflow-hidden pt-28 pb-6">
+        <!-- 顶部返回栏 -->
+        <div class="p-4 flex justify-between items-center shrink-0">
+            <button onclick="switchView('view-portal-map')" class="bg-antOrange text-white font-black px-6 py-3 rounded-2xl border-4 border-orange-600 shadow-md hover:bg-orange-400 flex items-center gap-2 btn-bouncy">
+                ⬅️ <span data-i18n="btn_back_map">返回游乐大厅</span>
+            </button>
+            <h2 id="room-title" class="font-cartoon text-4xl text-white font-black drop-shadow-xl bg-antPink/80 px-8 py-2 rounded-full border-4 border-white">
+                动态标题
+            </h2>
+            <div class="w-24"></div>
+        </div>
+
+        <div class="flex-1 relative flex flex-col md:flex-row min-h-0">
+            <!-- 左侧装饰场景 -->
+            <div class="w-full md:w-2/3 h-1/3 md:h-full relative flex items-end justify-center pb-10 md:pb-20 shrink-0 md:shrink">
+                <div class="absolute inset-x-0 bottom-0 h-1/2 md:h-1/3 bg-carpet -z-10"></div>
+                <div id="room-emoji-bg" class="text-[80px] md:text-[150px] floating">🎈</div>
+            </div>
+
+            <!-- 右侧：动态生成的菜单 -->
+            <div class="w-full md:w-1/3 h-2/3 md:h-full flex flex-col items-center justify-start md:justify-center relative bg-white/40 backdrop-blur-md rounded-t-[3rem] md:rounded-l-[3rem] border-t-8 md:border-l-8 md:border-t-0 border-white pt-10 md:pt-0 shrink-0 md:shrink">
+                
+                <div class="bg-orange-50 p-6 rounded-[2rem] border-8 border-antOrange shadow-xl w-80 flex flex-col gap-3">
+                    <div class="bg-antOrange text-white font-cartoon text-2xl text-center py-2 rounded-xl mb-2 shadow-inner drop-shadow-md" id="menu-header">选择项目</div>
                     
-                    <!-- 提示层：如果游戏没加载出来，会显示这个 -->
-                    <div class="absolute inset-0 flex flex-col items-center justify-center text-gray-500 -z-10 bg-gray-100">
-                        <span class="text-6xl mb-4">🕹️</span>
-                        <p class="font-bold">游戏加载中...</p>
-                        <p class="text-sm mt-2">（请确保你已上传了 game1.html）</p>
+                    <!-- 菜单按钮会通过 JS 动态注入到这里 -->
+                    <div id="dynamic-menu-container" class="flex flex-col gap-3 w-full max-h-96 overflow-y-auto pr-2">
+                        <!-- Buttons injected here -->
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- 课程展示区域 -->
-    <section id="courses" class="py-20 bg-amber-50">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 data-i18n="course_title" class="text-4xl font-black text-center mb-12 text-antOrange">🎈 我们的快乐课堂 🎈</h2>
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- 课程 1 -->
-                <div class="bg-white p-8 rounded-[2rem] shadow-lg border-4 border-antPink relative hover:-translate-y-2 transition duration-300">
-                    <div class="w-16 h-16 bg-pink-100 text-antPink rounded-full flex items-center justify-center text-3xl mb-4 border-2 border-pink-200">👶</div>
-                    <h3 data-i18n="course_1_title" class="text-2xl font-black mb-2 text-gray-800">少儿启蒙班 (5-10岁)</h3>
-                    <p data-i18n="course_1_desc" class="text-gray-600 font-bold mb-6">在故事和儿歌中认识世界，开心开口说话！</p>
-                    <ul class="text-gray-600 font-bold space-y-3 bg-pink-50 p-4 rounded-2xl">
-                        <li data-i18n="course_1_f1">🎨 趣味绘本与互动涂鸦</li>
-                        <li data-i18n="course_1_f2">🎵 拼音与自然拼读儿歌</li>
-                    </ul>
-                </div>
-                <!-- 课程 2 -->
-                <div class="bg-white p-8 rounded-[2rem] shadow-lg border-4 border-antBlue relative hover:-translate-y-2 transition duration-300">
-                    <div class="absolute -top-4 -right-4 bg-yellow-400 text-yellow-900 font-black px-4 py-2 rounded-full border-2 border-yellow-500 shadow-md rotate-12">
-                        HOT! 🔥
-                    </div>
-                    <div class="w-16 h-16 bg-blue-100 text-antBlue rounded-full flex items-center justify-center text-3xl mb-4 border-2 border-blue-200">👦</div>
-                    <h3 data-i18n="course_2_title" class="text-2xl font-black mb-2 text-gray-800">少儿进阶班 (11-15岁)</h3>
-                    <p data-i18n="course_2_desc" class="text-gray-600 font-bold mb-6">结合趣味话题，轻松提高听说读写能力。</p>
-                    <ul class="text-gray-600 font-bold space-y-3 bg-blue-50 p-4 rounded-2xl">
-                        <li data-i18n="course_2_f1">🗣️ 互动情景对话练习</li>
-                        <li data-i18n="course_2_f2">🏆 游戏化通关水平测试</li>
-                    </ul>
+
+    <!-- ==================== 4. 内嵌播放器 (玩游戏/看电子书) ==================== -->
+    <div id="view-portal-game" class="hidden-view fixed inset-0 z-[120] bg-black/95 flex flex-col items-center justify-start p-2 md:p-6 pt-32 pb-6 overflow-hidden">
+        
+        <div class="w-full max-w-6xl flex justify-between items-center mb-4 shrink-0">
+            <div class="flex items-center gap-4">
+                <span class="text-4xl" id="player-icon">🎮</span>
+                <h3 id="game-player-title" class="text-white font-cartoon text-2xl md:text-4xl font-black tracking-widest text-shadow">
+                    加载中...
+                </h3>
+            </div>
+            <!-- 修复点：加大、加亮的退出按钮 -->
+            <button onclick="closeGame()" class="bg-red-500 text-white font-black px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-red-600 border-4 border-white shadow-[0_0_20px_rgba(255,0,0,0.8)] flex items-center gap-3 btn-bouncy text-xl z-50">
+                <i class="fas fa-times-circle text-2xl"></i> <span class="hidden md:inline">退出并返回</span>
+            </button>
+        </div>
+
+        <!-- Iframe 容器：增加了 min-h-0 防止高度溢出顶端 -->
+        <div class="w-full flex-1 min-h-0 max-w-6xl bg-white rounded-[2rem] overflow-hidden border-8 border-antBlue shadow-[0_0_30px_rgba(14,165,233,0.3)] relative">
+            <iframe id="magic-game-iframe" src="" class="w-full h-full border-none bg-[#fffaf0]" allowfullscreen></iframe>
+            
+            <div id="game-loading-placeholder" class="absolute inset-0 flex flex-col items-center justify-center bg-blue-50">
+                <div class="text-9xl animate-bounce mb-8 drop-shadow-xl">🐜</div>
+                <h2 class="text-3xl font-cartoon text-antBlue font-black mb-6">正在开启魔法连接...</h2>
+                <div class="bg-white p-6 rounded-3xl shadow-lg border-4 border-dashed border-gray-300 text-center max-w-md">
+                    <p class="text-gray-600 font-bold text-lg mb-2">管理员提示：</p>
+                    <p class="text-gray-500 font-medium">如果你看到了这个画面，说明你需要把你做的游戏/PDF代码上传到 GitHub，并命名正确哦！</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <footer class="bg-gray-900 text-gray-400 py-10 text-center font-bold">
-        <div class="flex justify-center items-center gap-2 mb-4 opacity-50">
-            <span class="text-antPink">Little</span> <span class="text-antBlue">Ant</span> <span class="text-antOrange">Edu</span>
-        </div>
-        <p data-i18n="footer">&copy; 2024 The Little Ant Language Lab. All rights reserved.</p>
-    </footer>
 
-    <!-- 语言切换与发音逻辑 -->
+    <!-- ==================== 逻辑脚本与数据库 ==================== -->
     <script>
-        // --- 1. 语言翻译字典 ---
+        // ---------------------------------------------------
+        // 📚 核心数据：在这里配置你所有的游戏、电子书和练习！
+        // ---------------------------------------------------
+        const resourcesDB = {
+            'games': {
+                title: '互动游戏区',
+                emoji: '🕹️',
+                themeColor: 'antBlue',
+                items: [
+                    { name: "✨ 生字魔法屋", file: "./game1.html" },
+                    { name: "🎯 拼音消消乐", file: "./game2.html" },
+                    { name: "🏃‍♂️ 快乐探险营", file: "./game3.html" }
+                ]
+            },
+            'ebooks': {
+                title: '电子绘本馆',
+                emoji: '📚',
+                themeColor: 'antPink',
+                items: [
+                    { name: "📖 小蚂蚁的一天", file: "./book_ant.pdf" },
+                    { name: "📖 我的衣服小了", file: "./book_clothes.pdf" }
+                ]
+            },
+            'flashcards': {
+                title: '魔法字卡',
+                emoji: '✨',
+                themeColor: 'yellow-500',
+                items: [
+                    { name: "🃏 HSK 1 基础字卡", file: "./flashcards_hsk1.html" },
+                    { name: "🃏 动物园词汇卡", file: "./flashcards_animals.html" }
+                ]
+            },
+            'worksheets': {
+                title: '练习下载区',
+                emoji: '🖨️',
+                themeColor: 'green-600',
+                items: [
+                    { name: "✍️ 第一课 写字贴", file: "./worksheet1.pdf" },
+                    { name: "✍️ 趣味连线题", file: "./worksheet2.pdf" }
+                ]
+            }
+        };
+
+
+        // --- 视图切换逻辑 ---
+        const views = ['view-landing', 'view-portal-map', 'view-portal-room', 'view-portal-game'];
+
+        function switchView(targetViewId) {
+            views.forEach(id => {
+                document.getElementById(id).classList.add('hidden-view');
+            });
+            document.getElementById(targetViewId).classList.remove('hidden-view');
+            
+            // 离开播放器时清空内容，防止声音继续播放
+            if(targetViewId !== 'view-portal-game') {
+                document.getElementById('magic-game-iframe').src = "";
+                document.getElementById('game-loading-placeholder').style.display = 'flex';
+            }
+        }
+
+        // --- 打开特定分类的房间，并动态生成菜单 ---
+        function openResourceRoom(categoryId) {
+            const data = resourcesDB[categoryId];
+            
+            // 更新 UI
+            document.getElementById('room-title').innerText = data.title;
+            document.getElementById('room-emoji-bg').innerText = data.emoji;
+            document.getElementById('menu-header').innerText = "选择" + data.title;
+            
+            // 动态生成按钮
+            const menuContainer = document.getElementById('dynamic-menu-container');
+            menuContainer.innerHTML = ''; // 清空旧菜单
+            
+            data.items.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = "game-menu-btn py-3 px-4 rounded-xl font-black text-lg text-left w-full";
+                btn.innerText = item.name;
+                btn.onclick = () => openGame(item.file, item.name, data.emoji);
+                menuContainer.appendChild(btn);
+            });
+
+            switchView('view-portal-room');
+        }
+
+        // --- 打开内嵌播放器 ---
+        function openGame(fileUrl, itemName, icon) {
+            document.getElementById('game-player-title').innerText = itemName;
+            document.getElementById('player-icon').innerText = icon || '🎮';
+            const iframe = document.getElementById('magic-game-iframe');
+            iframe.src = fileUrl;
+            
+            // 如果成功加载了本地文件，隐藏提示框
+            iframe.onload = () => {
+                document.getElementById('game-loading-placeholder').style.display = 'none';
+            };
+
+            switchView('view-portal-game');
+        }
+
+        function closeGame() {
+            switchView('view-portal-room');
+        }
+
+        // --- 多语言翻译 ---
         const i18n = {
             zh: {
-                brand_part1: "小蚂蚁",
-                brand_part2: "语言实验室",
+                brand_part1: "小蚂蚁", brand_part2: "语言实验室",
+                nav_about: "关于我们", nav_courses: "课程体系",
                 hero_badge: "✨ 雅加达最欢乐的儿童课堂 ✨",
-                hero_title_1: "在",
-                hero_title_2: "开心学中文与英文！",
+                hero_title_1: "在", hero_title_2: "开心学中文与英文！",
                 hero_desc: "专为小朋友打造的魔法课堂！告别无聊，在游戏中掌握三种语言。",
-                btn_courses: "🎈 看看课程",
-                btn_cards: "🎮 玩转魔法字卡",
-                card_title: "✨ 魔法发音字卡 ✨",
-                card_desc: "点一点卡片会翻转，按喇叭会说话哦！",
-                panel_title: "发音小助手 🎙️",
-                btn_zh: "听中文 (Mandarin)",
-                btn_en: "听英文 (English)",
-                btn_id: "听印尼语 (Bahasa)",
-                btn_next: "换一个词 Next",
+                btn_courses: "了解课程", btn_enter_game: "进入数字游戏世界",
+                about_title: "为什么选择小蚂蚁？", about_subtitle: "用最有趣的方式，培养最扎实的语言基础",
+                feat_1_title: "纯正三语环境", feat_1_desc: "中文、英文、印尼语无缝切换，从小培养跨文化交流能力。",
+                feat_2_title: "互动游戏教学", feat_2_desc: "独创“数字游戏世界”，让孩子在玩耍中不知不觉记住生字和单词。",
+                feat_3_title: "专业教师团队", feat_3_desc: "拥有多年少儿语言教学经验，懂教育更懂孩子。",
                 course_title: "🎈 我们的快乐课堂 🎈",
-                course_1_title: "少儿启蒙班 (5-10岁)",
-                course_1_desc: "在故事和儿歌中认识世界，开心开口说话！",
-                course_1_f1: "🎨 趣味绘本与互动涂鸦",
-                course_1_f2: "🎵 拼音与自然拼读儿歌",
-                course_2_title: "少儿进阶班 (11-15岁)",
-                course_2_desc: "结合趣味话题，轻松提高听说读写能力。",
-                course_2_f1: "🗣️ 互动情景对话练习",
-                course_2_f2: "🏆 游戏化通关水平测试",
-                game_title: "🎮 魔法游戏乐园 🎮",
-                game_desc: "边玩边学，看看你能得多少分！",
-                game_1_name: "游戏 1：小蚂蚁找汉字",
+                course_1_title: "少儿启蒙班 (5-10岁)", course_1_desc: "在故事和儿歌中认识世界，开心开口说话！",
+                course_1_f1: "🎨 趣味绘本与互动涂鸦", course_1_f2: "🎵 拼音与自然拼读儿歌",
+                course_2_title: "少儿进阶班 (11-15岁)", course_2_desc: "结合趣味话题，轻松提高听说读写能力。",
+                course_2_f1: "🗣️ 互动情景对话练习", course_2_f2: "🏆 游戏世界通关测试",
+                btn_back_home: "返回官网主页", btn_back_map: "返回游乐大厅",
                 footer: "&copy; 2024 The Little Ant Language Lab. 保留所有权利。"
             },
             en: {
-                brand_part1: "The Little Ant",
-                brand_part2: " Language Lab",
-                hero_badge: "✨ Jakarta's Most Fun Trilingual Class ✨",
-                hero_title_1: "Learn Chinese & English with",
-                hero_title_2: "in a fun way!",
-                hero_desc: "A magical classroom for kids! No more boring lessons, master languages through games.",
-                btn_courses: "🎈 View Courses",
-                btn_cards: "🎮 Play Flashcards",
-                card_title: "✨ Magic Flashcards ✨",
-                card_desc: "Tap to flip, click the speaker to listen!",
-                panel_title: "Voice Assistant 🎙️",
-                btn_zh: "Mandarin",
-                btn_en: "English",
-                btn_id: "Bahasa Indonesia",
-                btn_next: "Next Word",
+                brand_part1: "Little Ant", brand_part2: " Language Lab",
+                nav_about: "About Us", nav_courses: "Courses",
+                hero_badge: "✨ Jakarta's Most Fun Kids Class ✨",
+                hero_title_1: "Learn languages with", hero_title_2: "in a fun way!",
+                hero_desc: "A magical classroom for kids! Master 3 languages through interactive games.",
+                btn_courses: "View Courses", btn_enter_game: "Enter Game World",
+                about_title: "Why Choose Little Ant?", about_subtitle: "Building a solid foundation the fun way",
+                feat_1_title: "Trilingual Environment", feat_1_desc: "Seamlessly switch between Mandarin, English, and Bahasa Indonesia.",
+                feat_2_title: "Interactive Games", feat_2_desc: "Our exclusive 'Digital Game World' helps kids memorize words while playing.",
+                feat_3_title: "Expert Teachers", feat_3_desc: "Years of experience in early childhood language education.",
                 course_title: "🎈 Our Happy Classes 🎈",
-                course_1_title: "Kids Starter (5-10 yrs)",
-                course_1_desc: "Discover the world through stories and songs!",
-                course_1_f1: "🎨 Picture books & drawing",
-                course_1_f2: "🎵 Phonics & Pinyin songs",
-                course_2_title: "Kids Explorer (11-15 yrs)",
-                course_2_desc: "Improve speaking and writing with fun topics.",
-                course_2_f1: "🗣️ Interactive role-play",
-                course_2_f2: "🏆 Gamified challenges",
-                game_title: "🎮 Magic Game Park 🎮",
-                game_desc: "Play and learn, see your high score!",
-                game_1_name: "Game 1: Ant's Word Hunt",
+                course_1_title: "Kids Starter (5-10 yrs)", course_1_desc: "Discover the world through stories and songs!",
+                course_1_f1: "🎨 Picture books & drawing", course_1_f2: "🎵 Phonics & Pinyin songs",
+                course_2_title: "Kids Explorer (11-15 yrs)", course_2_desc: "Improve speaking and writing with fun topics.",
+                course_2_f1: "🗣️ Interactive role-play", course_2_f2: "🏆 Game world challenges",
+                btn_back_home: "Back to Website", btn_back_map: "Back to Hub",
                 footer: "&copy; 2024 The Little Ant Language Lab. All rights reserved."
             },
             id: {
-                brand_part1: "The Little Ant", // 印尼语也显示英文品牌名
-                brand_part2: " Language Lab",
-                hero_badge: "✨ Kelas Trilingual Paling Seru di Jakarta ✨",
-                hero_title_1: "Belajar Mandarin & Inggris bersama",
-                hero_title_2: "dengan ceria!",
-                hero_desc: "Kelas ajaib untuk anak-anak! Belajar bahasa jadi sangat menyenangkan lewat permainan.",
-                btn_courses: "🎈 Lihat Kelas",
-                btn_cards: "🎮 Main Kartu",
-                card_title: "✨ Kartu Suara Ajaib ✨",
-                card_desc: "Sentuh kartu untuk membalik, klik speaker untuk mendengar!",
-                panel_title: "Asisten Suara 🎙️",
-                btn_zh: "Mandarin",
-                btn_en: "Bahasa Inggris",
-                btn_id: "Bahasa Indonesia",
-                btn_next: "Kata Selanjutnya",
+                brand_part1: "Little Ant", brand_part2: " Language Lab",
+                nav_about: "Tentang Kami", nav_courses: "Kelas",
+                hero_badge: "✨ Kelas Anak Paling Seru di Jakarta ✨",
+                hero_title_1: "Belajar bahasa bersama", hero_title_2: "dengan ceria!",
+                hero_desc: "Kelas ajaib untuk anak-anak! Kuasai 3 bahasa lewat permainan interaktif.",
+                btn_courses: "Lihat Kelas", btn_enter_game: "Masuk Dunia Game",
+                about_title: "Mengapa Memilih Little Ant?", about_subtitle: "Membangun dasar bahasa dengan cara menyenangkan",
+                feat_1_title: "Lingkungan Trilingual", feat_1_desc: "Mandarin, Inggris, dan Bahasa Indonesia dalam satu tempat.",
+                feat_2_title: "Belajar Sambil Bermain", feat_2_desc: "Dunia Game Digital kami membantu anak mengingat kata dengan mudah.",
+                feat_3_title: "Guru Profesional", feat_3_desc: "Berpengalaman mengajar bahasa untuk anak usia dini.",
                 course_title: "🎈 Kelas Bahagia Kami 🎈",
-                course_1_title: "Pemula Anak (5-10 thn)",
-                course_1_desc: "Mengenal dunia lewat cerita dan lagu!",
-                course_1_f1: "🎨 Buku cerita & menggambar",
-                course_1_f2: "🎵 Lagu Phonics & Pinyin",
-                course_2_title: "Eksplorasi Anak (11-15 thn)",
-                course_2_desc: "Tingkatkan kemampuan bahasa dengan topik yang seru.",
-                course_2_f1: "🗣️ Percakapan interaktif",
-                course_2_f2: "🏆 Tantangan bermain game",
-                game_title: "🎮 Taman Bermain Ajaib 🎮",
-                game_desc: "Bermain sambil belajar, lihat skormu!",
-                game_1_name: "Game 1: Semut Mencari Kata",
+                course_1_title: "Pemula Anak (5-10 thn)", course_1_desc: "Mengenal dunia lewat cerita dan lagu!",
+                course_1_f1: "🎨 Buku cerita & menggambar", course_1_f2: "🎵 Lagu Phonics & Pinyin",
+                course_2_title: "Eksplorasi Anak (11-15 thn)", course_2_desc: "Tingkatkan kemampuan bahasa dengan topik yang seru.",
+                course_2_f1: "🗣️ Percakapan interaktif", course_2_f2: "🏆 Tantangan dunia game",
+                btn_back_home: "Kembali ke Website", btn_back_map: "Kembali ke Lobi",
                 footer: "&copy; 2024 The Little Ant Language Lab. Semua hak dilindungi."
             }
         };
 
-        // --- 2. 语言切换功能 ---
         function setLang(lang) {
-            // 替换页面文字
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                if (i18n[lang][key]) {
-                    el.innerHTML = i18n[lang][key];
-                }
-            });
-
-            // 更改按钮高亮状态
-            const btns = ['zh', 'en', 'id'];
-            btns.forEach(b => {
-                const btnEl = document.getElementById('btn-lang-' + b);
-                btnEl.classList.remove('ring-4', 'ring-antPink', 'bg-antPink', 'bg-antBlue', 'bg-antOrange', 'text-white');
-                btnEl.classList.add('text-gray-500', 'bg-gray-100');
+                if (i18n[lang] && i18n[lang][key]) el.innerHTML = i18n[lang][key];
             });
             
+            const langs = ['zh', 'en', 'id'];
+            langs.forEach(l => {
+                const btn = document.getElementById('btn-lang-' + l);
+                btn.className = 'w-10 h-10 rounded-full font-black text-sm bg-gray-100 text-gray-500 hover:bg-gray-200 transition btn-bouncy';
+            });
+
             const activeBtn = document.getElementById('btn-lang-' + lang);
-            activeBtn.classList.remove('text-gray-500', 'bg-gray-100');
-            activeBtn.classList.add('text-white');
-            if(lang === 'zh') activeBtn.classList.add('bg-antPink', 'ring-4', 'ring-antPink');
-            if(lang === 'en') activeBtn.classList.add('bg-antBlue', 'ring-4', 'ring-blue-300');
-            if(lang === 'id') activeBtn.classList.add('bg-antOrange', 'ring-4', 'ring-orange-300');
+            if(lang === 'zh') activeBtn.className = 'w-10 h-10 rounded-full font-black text-sm bg-antPink text-white ring-4 ring-pink-200 btn-bouncy';
+            if(lang === 'en') activeBtn.className = 'w-10 h-10 rounded-full font-black text-sm bg-antBlue text-white ring-4 ring-blue-200 btn-bouncy';
+            if(lang === 'id') activeBtn.className = 'w-10 h-10 rounded-full font-black text-sm bg-antOrange text-white ring-4 ring-orange-200 btn-bouncy';
         }
 
-        // --- 3. 字卡数据与逻辑 (听说读写) ---
-        const words = [
-            { cn: "听", pinyin: "tīng", en: "Listen", id: "Mendengar", emoji: "👂" },
-            { cn: "说", pinyin: "shuō", en: "Speak", id: "Berbicara", emoji: "🗣️" },
-            { cn: "读", pinyin: "dú", en: "Read", id: "Membaca", emoji: "📖" },
-            { cn: "写", pinyin: "xiě", en: "Write", id: "Menulis", emoji: "✍️" },
-            { cn: "蚂蚁", pinyin: "mǎ yǐ", en: "Ant", id: "Semut", emoji: "🐜" }
-        ];
-        
-        let currentIndex = 0;
-
-        function speakText(langType) {
-            if (!('speechSynthesis' in window)) {
-                alert("抱歉，您的浏览器不支持语音播报。");
-                return;
-            }
-            window.speechSynthesis.cancel();
-            const word = words[currentIndex];
-            let text = "";
-            let langCode = "";
-
-            if (langType === 'cn') { text = word.cn; langCode = 'zh-CN'; }
-            if (langType === 'en') { text = word.en; langCode = 'en-US'; }
-            if (langType === 'id') { text = word.id; langCode = 'id-ID'; }
-
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = langCode;
-            utterance.rate = 0.85; 
-            window.speechSynthesis.speak(utterance);
-        }
-
-        function changeWord() {
-            currentIndex = (currentIndex + 1) % words.length;
-            const word = words[currentIndex];
-            
-            document.querySelector('.flip-card').classList.remove('flipped');
-            
-            setTimeout(() => {
-                document.getElementById('cn-text').innerText = word.cn;
-                document.getElementById('cn-text').previousElementSibling.innerText = word.pinyin;
-                document.getElementById('cn-text').previousElementSibling.previousElementSibling.innerText = word.emoji;
-                document.getElementById('en-text').innerText = word.en;
-                document.getElementById('id-text').innerText = word.id;
-            }, 300);
-        }
-
-        // 页面加载完成时初始化为中文
-        window.onload = () => {
-            setLang('zh');
-        };
+        window.onload = () => setLang('zh');
     </script>
 </body>
 </html>
