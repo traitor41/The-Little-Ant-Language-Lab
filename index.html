@@ -194,7 +194,8 @@
 
 
     <!-- ==================== 2. 数字游戏世界 (Hub / Map) ==================== -->
-    <div id="view-portal-map" class="hidden-view fixed inset-0 z-[100] bg-cartoon-sky flex flex-col overflow-hidden pt-28 pb-6">
+    <!-- 修复：将 overflow-hidden 改为 overflow-y-auto，允许小屏幕上下滑动 -->
+    <div id="view-portal-map" class="hidden-view fixed inset-0 z-[100] bg-cartoon-sky flex flex-col overflow-y-auto overflow-x-hidden pt-28 pb-6">
         <!-- 顶部返回栏 -->
         <div class="p-4 flex justify-between items-center relative z-10 shrink-0">
             <button onclick="switchView('view-landing')" class="btn-bouncy bg-white text-antPink font-black px-6 py-3 rounded-2xl border-4 border-antPink shadow-md hover:bg-pink-50 flex items-center gap-2">
@@ -207,15 +208,16 @@
         </div>
 
         <!-- 资源分类大厅 -->
-        <div class="flex-1 relative flex items-center justify-center p-4 md:p-8">
+        <!-- 修复：将手机端的 items-center 改为 items-start，防止滑动时顶部被截断 -->
+        <div class="flex-1 relative flex items-start md:items-center justify-center p-4 md:p-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl w-full">
                 
-                <!-- 类别 1：游戏大厅 -->
+                <!-- 类别 1：游戏大厅 (修复了翻译标签) -->
                 <button onclick="openResourceRoom('games')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
                     <div class="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">🎮</div>
                     <div class="text-center">
-                        <div class="font-cartoon text-3xl text-antBlue drop-shadow-sm mb-2">互动游戏区</div>
-                        <div class="text-sm font-bold text-gray-500">生字魔法屋、找找看...</div>
+                        <div class="font-cartoon text-3xl text-antBlue drop-shadow-sm mb-2" data-i18n="hub_game_title">互动游戏区</div>
+                        <div class="text-sm font-bold text-gray-500" data-i18n="hub_game_desc">生字魔法屋、找找看...</div>
                     </div>
                 </button>
 
@@ -223,8 +225,8 @@
                 <button onclick="openResourceRoom('ebooks')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
                     <div class="w-24 h-24 bg-pink-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">📚</div>
                     <div class="text-center">
-                        <div class="font-cartoon text-3xl text-antPink drop-shadow-sm mb-2">电子绘本馆</div>
-                        <div class="text-sm font-bold text-gray-500">有声故事、趣味阅读...</div>
+                        <div class="font-cartoon text-3xl text-antPink drop-shadow-sm mb-2" data-i18n="hub_ebook_title">电子绘本馆</div>
+                        <div class="text-sm font-bold text-gray-500" data-i18n="hub_ebook_desc">有声故事、趣味阅读...</div>
                     </div>
                 </button>
 
@@ -232,8 +234,8 @@
                 <button onclick="openResourceRoom('flashcards')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
                     <div class="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">✨</div>
                     <div class="text-center">
-                        <div class="font-cartoon text-3xl text-yellow-600 drop-shadow-sm mb-2">魔法字卡</div>
-                        <div class="text-sm font-bold text-gray-500">点读发音、图文并茂...</div>
+                        <div class="font-cartoon text-3xl text-yellow-600 drop-shadow-sm mb-2" data-i18n="hub_flashcard_title">魔法字卡</div>
+                        <div class="text-sm font-bold text-gray-500" data-i18n="hub_flashcard_desc">点读发音、图文并茂...</div>
                     </div>
                 </button>
 
@@ -241,8 +243,8 @@
                 <button onclick="openResourceRoom('worksheets')" class="resource-btn rounded-[3rem] p-6 flex flex-col items-center justify-center gap-4 group">
                     <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center text-5xl group-hover:scale-110 transition-transform">🖨️</div>
                     <div class="text-center">
-                        <div class="font-cartoon text-3xl text-green-600 drop-shadow-sm mb-2">练习下载区</div>
-                        <div class="text-sm font-bold text-gray-500">趣味涂色、写字练习...</div>
+                        <div class="font-cartoon text-3xl text-green-600 drop-shadow-sm mb-2" data-i18n="hub_worksheet_title">练习下载区</div>
+                        <div class="text-sm font-bold text-gray-500" data-i18n="hub_worksheet_desc">趣味涂色、写字练习...</div>
                     </div>
                 </button>
 
@@ -257,7 +259,8 @@
 
 
     <!-- ==================== 3. 具体资源房间 (动态菜单) ==================== -->
-    <div id="view-portal-room" class="hidden-view fixed inset-0 z-[110] bg-room flex flex-col overflow-hidden pt-28 pb-6">
+    <!-- 修复：将 overflow-hidden 改为 overflow-y-auto -->
+    <div id="view-portal-room" class="hidden-view fixed inset-0 z-[110] bg-room flex flex-col overflow-y-auto overflow-x-hidden pt-28 pb-6">
         <!-- 顶部返回栏 -->
         <div class="p-4 flex justify-between items-center shrink-0">
             <button onclick="switchView('view-portal-map')" class="bg-antOrange text-white font-black px-6 py-3 rounded-2xl border-4 border-orange-600 shadow-md hover:bg-orange-400 flex items-center gap-2 btn-bouncy">
@@ -293,7 +296,8 @@
 
 
     <!-- ==================== 4. 内嵌播放器 (玩游戏/看电子书) ==================== -->
-    <div id="view-portal-game" class="hidden-view fixed inset-0 z-[120] bg-black/95 flex flex-col items-center justify-start p-2 md:p-6 pt-32 pb-6 overflow-hidden">
+    <!-- 修复：将 overflow-hidden 改为 overflow-y-auto -->
+    <div id="view-portal-game" class="hidden-view fixed inset-0 z-[120] bg-black/95 flex flex-col items-center justify-start px-2 pb-4 pt-32 md:px-6 md:pb-6 overflow-y-auto overflow-x-hidden">
         
         <div class="w-full max-w-6xl flex justify-between items-center mb-4 shrink-0">
             <div class="flex items-center gap-4">
@@ -302,13 +306,13 @@
                     加载中...
                 </h3>
             </div>
-            <!-- 修复点：加大、加亮的退出按钮 -->
+            <!-- 修复点：加大了退出按钮，加入了图标，让它更显眼 -->
             <button onclick="closeGame()" class="bg-red-500 text-white font-black px-6 md:px-8 py-3 md:py-4 rounded-full hover:bg-red-600 border-4 border-white shadow-[0_0_20px_rgba(255,0,0,0.8)] flex items-center gap-3 btn-bouncy text-xl z-50">
                 <i class="fas fa-times-circle text-2xl"></i> <span class="hidden md:inline">退出并返回</span>
             </button>
         </div>
 
-        <!-- Iframe 容器：增加了 min-h-0 防止高度溢出顶端 -->
+        <!-- Iframe 容器：加入了 min-h-0 防止高度溢出 -->
         <div class="w-full flex-1 min-h-0 max-w-6xl bg-white rounded-[2rem] overflow-hidden border-8 border-antBlue shadow-[0_0_30px_rgba(14,165,233,0.3)] relative">
             <iframe id="magic-game-iframe" src="" class="w-full h-full border-none bg-[#fffaf0]" allowfullscreen></iframe>
             
@@ -448,6 +452,10 @@
                 course_2_title: "少儿进阶班 (11-15岁)", course_2_desc: "结合趣味话题，轻松提高听说读写能力。",
                 course_2_f1: "🗣️ 互动情景对话练习", course_2_f2: "🏆 游戏世界通关测试",
                 btn_back_home: "返回官网主页", btn_back_map: "返回游乐大厅",
+                hub_game_title: "互动游戏区", hub_game_desc: "生字魔法屋、找找看...",
+                hub_ebook_title: "电子绘本馆", hub_ebook_desc: "有声故事、趣味阅读...",
+                hub_flashcard_title: "魔法字卡", hub_flashcard_desc: "点读发音、图文并茂...",
+                hub_worksheet_title: "练习下载区", hub_worksheet_desc: "趣味涂色、写字练习...",
                 footer: "&copy; 2024 The Little Ant Language Lab. 保留所有权利。"
             },
             en: {
@@ -467,6 +475,10 @@
                 course_2_title: "Kids Explorer (11-15 yrs)", course_2_desc: "Improve speaking and writing with fun topics.",
                 course_2_f1: "🗣️ Interactive role-play", course_2_f2: "🏆 Game world challenges",
                 btn_back_home: "Back to Website", btn_back_map: "Back to Hub",
+                hub_game_title: "Interactive Games", hub_game_desc: "Word Magic, Seek & Find...",
+                hub_ebook_title: "E-Book Library", hub_ebook_desc: "Audio stories, fun reading...",
+                hub_flashcard_title: "Magic Flashcards", hub_flashcard_desc: "Audio, pictures & text...",
+                hub_worksheet_title: "Worksheets", hub_worksheet_desc: "Coloring, writing practice...",
                 footer: "&copy; 2024 The Little Ant Language Lab. All rights reserved."
             },
             id: {
@@ -486,6 +498,10 @@
                 course_2_title: "Eksplorasi Anak (11-15 thn)", course_2_desc: "Tingkatkan kemampuan bahasa dengan topik yang seru.",
                 course_2_f1: "🗣️ Percakapan interaktif", course_2_f2: "🏆 Tantangan dunia game",
                 btn_back_home: "Kembali ke Website", btn_back_map: "Kembali ke Lobi",
+                hub_game_title: "Area Game Interaktif", hub_game_desc: "Pondok Kata, Cari & Temukan...",
+                hub_ebook_title: "Perpustakaan E-Book", hub_ebook_desc: "Cerita audio, bacaan seru...",
+                hub_flashcard_title: "Kartu Ajaib", hub_flashcard_desc: "Audio, gambar & teks...",
+                hub_worksheet_title: "Unduh Latihan", hub_worksheet_desc: "Mewarnai, latihan menulis...",
                 footer: "&copy; 2024 The Little Ant Language Lab. Semua hak dilindungi."
             }
         };
